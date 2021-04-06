@@ -1,3 +1,3 @@
-module github.com/luchunkf/go-task
+module github.com/luchunkf/gotask
 
 go 1.16
