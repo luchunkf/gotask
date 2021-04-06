@@ -29,7 +29,7 @@ func taskLoop() {
 			n := name.(string)
 
 			//未到时间，不执行
-			if t2.timestamp < now {
+			if t2.timestamp > now {
 				return true
 			}
 
@@ -44,6 +44,19 @@ func taskLoop() {
 
 //执行任务,记录日志
 func runTask(tname string, t *task) {
-	t.taskFunc(t.param)
 
+	defer func() {
+
+		//移除失败任务
+		taskMap.Delete(tname)
+		//记录执行失败任务
+		if err := recover(); err != nil {
+			logRunFail(tname, err)
+		}
+	}()
+
+	//移除已执行任务
+	taskMap.Delete(tname)
+	t.taskFunc(t.param)
+	logRunSuccess(tname)
 }
