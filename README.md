@@ -115,3 +115,38 @@ gotask.SetLogPath("./go_task.log") //在程序执行目录go_task.log文件记�
 - 暂时不支持任务持久化，一旦主进程退出，队列中任务不会保存
 - 在任务中如果出现没有被recover的panic, 并不会导致程序退出，会在日志中记录。
 - 任务执行时间和实际时间误差不超过1秒。
+
+
+### DEMO
+
+```go
+package main
+
+import (
+	"fmt"
+	"time"
+
+	"github.com/luchunkf/gotask"
+)
+
+func main() {
+
+	gotask.SetLogPath("./log-taks.log")
+
+	t := time.Now().Add(time.Second * 3)
+
+	gotask.AddTask("task1", t, func(v interface{}) {
+		fmt.Println("task1")
+		fmt.Println(v)
+	}, "param")
+
+	gotask.AddTask("task2", time.Now().Add(time.Second*5), task2, nil)
+
+	time.Sleep(time.Second * 10)
+}
+
+func task2(v interface{}) {
+	fmt.Println("task2")
+}
+
+```
